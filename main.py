@@ -1,29 +1,22 @@
-import requests as requests
-from decouple import config
+import utility
+import pyperclip as clip
 
-file_path = input("Please enter the path to the file you would like to upload: ")
-file = ''
-try:
-  file = open(file_path, 'rb')
-except FileNotFoundError:
-  print("\nInvalid file path")
-  exit()
+while True:
+    file_path = input("\nPlease enter the path to the file you would like to upload: ")
 
-url = 'https://api.imgur.com/3/image'
-CLIENT_ID = config('CLIENT_ID')
+    file = utility.get_file(file_path)
+    if not file:
+        print("\nFile path is invalid")
+        continue
 
-payload = {
-  'type': 'file',
-  'disable_audio': '0'
-  }
-files = [
-  ('image', file)
-]
-headers = {
-  'Authorization': 'Client-ID {0}'.format(CLIENT_ID)
-}
-response = requests.request("POST", url, headers=headers, data = payload, files = files)
-jsonData = response.json()
-print(response.json())
-print("Here is the link:\n" + jsonData["data"]["link"])
+    link = utility.upload(file)
 
+    if link:
+        clip.copy(link)
+        print("\nThe link should be on your clipboard! If not, here it is: " + link)
+        exit()
+    else:
+        print(
+            "\nSomething went wrong. The file might have been too large, check json for more details"
+        )
+        continue
