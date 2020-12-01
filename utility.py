@@ -13,7 +13,8 @@ def get_file(path):
 
 # Uploads file to imgur and returns link if successful (status code 200).
 # If unsuccessful, returns None
-def upload_to_imgur(file):
+def upload_to_imgur(path):
+    file = get_file(path)
     url = "https://api.imgur.com/3/image"
     CLIENT_ID = config("CLIENT_ID")
 
@@ -23,14 +24,15 @@ def upload_to_imgur(file):
 
     res = requests.request("POST", url, headers=headers, data=payload, files=files)
     if res.status_code != 200:
-        print("Something went wrong, response: ")
-        print(res.json())
+        # print("Something went wrong, response: ")
+        # print(res.json())
         return None
 
     return res.json()["data"]["link"]
 
 
-def upload_to_giphy(file):
+def upload_to_giphy(path):
+    file = get_file(path)
     api_endpoint = "http://api.giphy.com/v1/gifs"
     upload_endpoint = "http://upload.giphy.com/v1/gifs"
     GIPHY_ID = config("GIPHY_ID")
@@ -39,11 +41,15 @@ def upload_to_giphy(file):
     "api_key": GIPHY_ID,
     "username": USERNAME
     }
+
+
+
     res = requests.post(upload_endpoint, params=params, files={'file': file})
     data = res.json()
+    print("\nDATA: \n")
     print(data)
     gif_id = data['data']['id']
-    print("ID:\n ")
+    print("\nJOINED_ENDPOINT: \n ")
     joined_endpoint = '/'.join((api_endpoint, gif_id))
     print(joined_endpoint)
     

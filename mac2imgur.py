@@ -4,19 +4,22 @@ import pyperclip as clip
 while True:
     file_path = input("\nPlease enter the path to the file you would like to upload: ")
 
-    file = utility.get_file(file_path)
-    if not file:
-        print("\nFile path is invalid")
-        continue
+    
+   
+    print("\nAttempting Imgur upload...")
+    link = utility.upload_to_imgur(file_path)
 
-    link = utility.upload_to_giphy(file)
+    if not link:
+        print("\nUpload to Imgur failed, uploading to Giphy...")
+        link = utility.upload_to_giphy(file_path)
 
     if link:
         clip.copy(link)
-        print("\nThe link should be on your clipboard! If not, here it is: " + link)
+        print("\nThe link should be on your clipboard! If not, copy it here: " + link)
         exit()
     else:
         print(
-            "\nSomething went wrong. The file might have been too large, check json for more details"
+            "\nSomething went wrong. The file might have been too large, or the daily upload limit " +
+            "to Giphy may have been met check json for more details"
         )
         continue
