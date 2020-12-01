@@ -1,9 +1,10 @@
 import utility
 import pyperclip as clip
+from pygifsicle import optimize
 
 while True:
     file_path = input("\nPlease enter the path to the file you would like to upload: ")
-
+    optimize(file_path)
     file = utility.get_file(file_path)
     if not file:
         print("\nFile path is invalid")
