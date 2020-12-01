@@ -1,4 +1,4 @@
-import requests as requests
+import requests
 from decouple import config
 
 
@@ -13,7 +13,7 @@ def get_file(path):
 
 # Uploads file to imgur and returns link if successful (status code 200).
 # If unsuccessful, returns None
-def upload(file):
+def upload_to_imgur(file):
     url = "https://api.imgur.com/3/image"
     CLIENT_ID = config("CLIENT_ID")
 
@@ -28,3 +28,26 @@ def upload(file):
         return None
 
     return res.json()["data"]["link"]
+
+
+def upload_to_giphy(file):
+    api_endpoint = "http://api.giphy.com/v1/gifs"
+    upload_endpoint = "http://upload.giphy.com/v1/gifs"
+    GIPHY_ID = config("GIPHY_ID")
+    USERNAME = config("GIPHY_USERNAME")
+    params = {
+    "api_key": GIPHY_ID,
+    "username": USERNAME
+    }
+    res = requests.post(upload_endpoint, params=params, files={'file': file})
+    data = res.json()
+    print(data)
+    gif_id = data['data']['id']
+    print("ID:\n ")
+    joined_endpoint = '/'.join((api_endpoint, gif_id))
+    print(joined_endpoint)
+    
+    res = requests.get(joined_endpoint, params=params)
+    res_data = res.json()
+    print(res_data)
+    return res_data['data']['url']

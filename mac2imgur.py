@@ -9,7 +9,7 @@ while True:
         print("\nFile path is invalid")
         continue
 
-    link = utility.upload(file)
+    link = utility.upload_to_giphy(file)
 
     if link:
         clip.copy(link)
