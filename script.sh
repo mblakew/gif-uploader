@@ -1,7 +1,8 @@
 # The following script resides in my default directory
 # for easy access by simply opening a terminal.
 
-# #!/bin/sh
-# source {path-to-project}/venv/bin/activate
-# python {path-to-project}/mac2imgur.py
+#!/bin/sh
+# readonly filePath="pathToProject"
+# source ${filePath}/venv/bin/activate
+# python ${filePath}/mac2gif.py
 # deactivate
