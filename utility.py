@@ -42,18 +42,16 @@ def upload_to_giphy(path):
     "username": USERNAME
     }
 
-
-
     res = requests.post(upload_endpoint, params=params, files={'file': file})
     data = res.json()
-    print("\nDATA: \n")
-    print(data)
+    # print("\nDATA: \n")
+    # print(data)
     gif_id = data['data']['id']
-    print("\nJOINED_ENDPOINT: \n ")
+    # print("\nJOINED_ENDPOINT: \n ")
     joined_endpoint = '/'.join((api_endpoint, gif_id))
-    print(joined_endpoint)
+    # print(joined_endpoint)
     
     res = requests.get(joined_endpoint, params=params)
     res_data = res.json()
-    print(res_data)
+    # print(res_data)
     return res_data['data']['url']
