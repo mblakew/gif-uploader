@@ -18,4 +18,4 @@ Also included in this repo is a template bash script (script.sh) that sources th
 
 <br/>
 
-![](https://i.imgur.com/4YSHMHi.gif)
+![](https://i.imgur.com/gIaz1OO.gif)
