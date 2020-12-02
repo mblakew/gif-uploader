@@ -4,7 +4,13 @@ from PIL import ImageGrab
 import io
 import codecs
 import os
+from pathlib import Path
 
+
+
+
+file_path = input("\nPlease enter the path to the file you would like to upload: ")
+print(Path(file_path).stat().st_size)
 
 
 img = ImageGrab.grabclipboard()
