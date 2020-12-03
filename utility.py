@@ -3,10 +3,15 @@ from decouple import config
 import pyperclip as clip
 from pathlib import Path
 
+IMGUR_ENDPOINT = "https://api.imgur.com/3/image"
+GIPHY_GET_ENDPOINT = "http://api.giphy.com/v1/gifs"
+GIPHY_UPLOAD_ENDPOINT = "http://upload.giphy.com/v1/gifs"
+
 
 # Returns file size in bytes
 def get_file_size(file_path):
-    return (Path(file_path).stat().st_size / 1000000)
+    file_size_in_bytes = Path(file_path).stat().st_size
+    return (file_size_in_bytes / (1024*1024))
 
 
 # Copies link to clipboard and exits. Prints error message if link is empty
@@ -35,28 +40,21 @@ def get_file(path):
 # Uploads file to imgur and returns link if successful (status code 200).
 # If unsuccessful, returns None
 def upload_to_imgur(file):
-    # file = get_file(path)
-    url = "https://api.imgur.com/3/image"
     CLIENT_ID = config("CLIENT_ID")
 
     payload = {"type": "file", "disable_audio": "0"}
     files = [("image", file)]
     headers = {"Authorization": "Client-ID {0}".format(CLIENT_ID)}
 
-    res = requests.request("POST", url, headers=headers,
+    res = requests.request("POST", IMGUR_ENDPOINT, headers=headers,
                            data=payload, files=files)
     if res.status_code != 200:
-        # print("Something went wrong, response: ")
-        # print(res.json())
         return None
 
     return res.json()["data"]["link"]
 
 
 def upload_to_giphy(file):
-    # file = get_file(path)
-    api_endpoint = "http://api.giphy.com/v1/gifs"
-    upload_endpoint = "http://upload.giphy.com/v1/gifs"
     GIPHY_ID = config("GIPHY_ID")
     USERNAME = config("GIPHY_USERNAME")
     params = {
@@ -64,16 +62,17 @@ def upload_to_giphy(file):
         "username": USERNAME
     }
 
-    res = requests.post(upload_endpoint, params=params, files={'file': file})
+    res = requests.post(GIPHY_UPLOAD_ENDPOINT,
+                        params=params, files={'file': file})
     data = res.json()
-    # print("\nDATA: \n")
-    # print(data)
-    gif_id = data['data']['id']
-    # print("\nJOINED_ENDPOINT: \n ")
-    joined_endpoint = '/'.join((api_endpoint, gif_id))
-    # print(joined_endpoint)
 
+    if res.status_code != 200:
+        print("\nFailed to upload to Giphy, take a look at the JSON: \n")
+        print(data)
+        exit()
+
+    joined_endpoint = '/'.join((GIPHY_GET_ENDPOINT, data['data']['id']))
     res = requests.get(joined_endpoint, params=params)
+
     res_data = res.json()
-    # print(res_data)
     return res_data['data']['url']
