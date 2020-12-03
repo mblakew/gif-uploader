@@ -8,7 +8,7 @@ GIPHY_GET_ENDPOINT = "http://api.giphy.com/v1/gifs"
 GIPHY_UPLOAD_ENDPOINT = "http://upload.giphy.com/v1/gifs"
 
 
-# Returns file size in bytes
+# Returns file size in MB
 def get_file_size(file_path):
     file_size_in_bytes = Path(file_path).stat().st_size
     return (file_size_in_bytes / (1024*1024))
